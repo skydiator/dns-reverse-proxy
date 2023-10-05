@@ -69,12 +69,15 @@ EOF
 ```
 
 Reload SystemD to load the new configuration file
+
     $ sudo systemctl daemon-reload
 
 Enable and start the new dns reverse proxy service
+
     $ sudo systemctl enable --now dns-reverse-proxy
 
 Ensure the service is up by force restart it
+
     $ sudo systemctl restart dns-reverse-proxy
 
 # License
