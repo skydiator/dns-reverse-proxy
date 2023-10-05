@@ -40,6 +40,43 @@ Install go package, create Debian package, install:
 Configure in `/etc/default/dns-reverse-proxy` and start with
 `/etc/init.d/dns-reverse-proxy start`.
 
+# Setup as system service (Debian/Ubuntu)
+
+Create the system service file:
+```
+sudo cat <<EOF > /etc/systemd/system/dns-reverse-proxy.service
+[Unit]
+Description=dns-reverse-proxy
+After=syslog.target
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=dns-reverse-proxy -address <LISTEN_ADDRESS> -default <Upstream_DNS_SERVER>
+Restart=always
+RestartSec=5
+
+# Optional security enhancements
+NoNewPrivileges=yes
+ProtectHome=yes
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+
+Reload SystemD to load the new configuration file
+    $ sudo systemctl daemon-reload
+
+Enable and start the new dns reverse proxy service
+    $ sudo systemctl enable --now dns-reverse-proxy
+
+Ensure the service is up by force restart it
+    $ sudo systemctl restart dns-reverse-proxy
+
 # License
 
 [Apache License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
